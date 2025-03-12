@@ -1,1 +1,98 @@
 
+CREATE TABLE IF NOT EXISTS predios (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) DEFAULT '',
+    area_hectareas FLOAT DEFAULT 0,
+    tipo_sueldo VARCHAR(30) DEFAULT '',
+    capacidad_maxima INT DEFAULT 0,
+    observaciones TEXT DEFAULT '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS potreros (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) DEFAULT '',
+    area_hectareas FLOAT DEFAULT 0,
+    tipo_sueldo VARCHAR(30) DEFAULT '',
+    capacidad_maxima INT DEFAULT 0,
+    observaciones TEXT DEFAULT '',
+	activo int default 1,
+	CONSTRAINT fk_predios_potreros FOREIGN KEY (id_predio) REFERENCES predios(id)
+);
+
+CREATE TABLE IF NOT EXISTS sectores (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) DEFAULT '',
+	activo int default 1,
+	CONSTRAINT fk_predios_sectores FOREIGN KEY (id_predio) REFERENCES predios(id)
+);
+
+CREATE TABLE IF NOT EXISTS lotes (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) DEFAULT '',
+	activo int default 1,
+	CONSTRAINT fk_predios_lotes FOREIGN KEY (id_predio) REFERENCES predios(id)
+);
+
+CREATE TABLE IF NOT EXISTS grupos (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) DEFAULT '',
+	activo int default 1,
+	CONSTRAINT fk_predios_grupos FOREIGN KEY (id_predio) REFERENCES predios(id)
+);
+
+CREATE TABLE IF NOT EXISTS config_rangos_edades (
+    id int PRIMARY KEY,
+    rango1 int default 0,
+    rango2 int default 0,
+	nombre varchar(50) NOT NULL default '',
+	sexo int NOT NULL default 0,
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_key_values (
+	opcion varchar(30) NOT NULL default '',
+	key varchar(50) NOT NULL default '',
+	value varchar(50) NOT NULL default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_razas (
+    id SERIAL PRIMARY KEY,
+	nombre varchar(50) NOT NULL default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_parametros (
+    id SERIAL PRIMARY KEY,
+	nombre varchar(50) NOT NULL default '',
+	descripcion TEXT NOT NULL default '',
+	value_int int default 0,
+	value_float float default 0,
+	value_date TIMESTAMP,
+	activo int default 1
+);
+
+
+---insertar los registros config_rangos_edades-----
+DELETE FROM config_rangos_edades;
+INSERT INTO config_rangos_edades (id, rango1, rango2, nombre, sexo, activo) VALUES
+(1, 1, 240, 'Ternero', 0, 1),
+(2, 241, 365, 'Novillo destete', 0, 1),
+(3, 366, 600, 'Novillo levante', 0, 1),
+(4, 601, 1080, 'Novillo Ceba', 0, 1),
+(5, 1081, 10000, 'Toro', 0, 1),
+(6, 1, 240, 'Ternera', 1, 1),
+(7, 241, 365, 'Novilla destete', 1, 1),
+(8, 366, 600, 'Novilla lavante', 1, 1),
+(9, 601, 1080, 'Novilla vientre', 1, 1),
+(10, 1081, 10000, 'Vaca', 1, 1);
