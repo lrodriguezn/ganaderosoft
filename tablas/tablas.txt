@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS config_razas (
 
 CREATE TABLE IF NOT EXISTS config_diagnosticos_veterinarios (
     id SERIAL PRIMARY KEY,
+	id_predio int,
 	codigo VARCHAR(20) NOT NULL,
 	nombre varchar(50) NOT NULL default '',
 	tipo_diagnostico int not null default 0,
