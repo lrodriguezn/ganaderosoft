@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS predios (
 
 CREATE TABLE IF NOT EXISTS potreros (
     id SERIAL PRIMARY KEY,
-	id_predio int,
+id_predio int,
     codigo VARCHAR(20) NOT NULL UNIQUE,
     nombre VARCHAR(100) DEFAULT '',
     area_hectareas FLOAT DEFAULT 0,
@@ -78,7 +78,8 @@ CREATE TABLE IF NOT EXISTS config_diagnosticos_veterinarios (
 	nombre varchar(50) NOT NULL default '',
 	tipo_diagnostico int not null default 0,
 	comentarios text default '',
-	activo int default 1
+	activo int default 1,
+	CONSTRAINT fk_predios_grupos FOREIGN KEY (id_predio) REFERENCES predios(id)
 );
 
 CREATE TABLE IF NOT EXISTS config_condiciones_corporales (
