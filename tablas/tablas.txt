@@ -72,14 +72,66 @@ CREATE TABLE IF NOT EXISTS config_razas (
 	activo int default 1
 );
 
+CREATE TABLE IF NOT EXISTS config_diagnosticos_veterinarios (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	tipo_diagnostico int not null default 0,
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_condiciones_corporales (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_tipos_explotacion (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_calidad_animal (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_color_animal (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_motivos_venta (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1,
+	CONSTRAINT fk_predios_grupos FOREIGN KEY (id_predio) REFERENCES predios(id)
+);
+
 CREATE TABLE IF NOT EXISTS config_parametros (
     id SERIAL PRIMARY KEY,
+	id_predio int,
 	nombre varchar(50) NOT NULL default '',
 	descripcion TEXT NOT NULL default '',
 	value_int int default 0,
 	value_float float default 0,
 	value_date TIMESTAMP,
-	activo int default 1
+	activo int default 1,
+	CONSTRAINT fk_predios_grupos FOREIGN KEY (id_predio) REFERENCES predios(id)
 );
 
 
@@ -96,3 +148,10 @@ INSERT INTO config_rangos_edades (id, rango1, rango2, nombre, sexo, activo) VALU
 (8, 366, 600, 'Novilla lavante', 1, 1),
 (9, 601, 1080, 'Novilla vientre', 1, 1),
 (10, 1081, 10000, 'Vaca', 1, 1);
+
+---insertar los registros config_key_values-----
+DELETE FROM config_key_values;
+INSERT INTO config_key_values (opcion,key,value,activo) VALUES
+('sexo','Masculino','0',1),
+('sexo','Femenino','1',1)
+
