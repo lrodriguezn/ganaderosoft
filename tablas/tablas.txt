@@ -1,3 +1,8 @@
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS predios (
     id SERIAL PRIMARY KEY,
@@ -19,9 +24,10 @@ id_predio int,
     tipo_sueldo VARCHAR(30) DEFAULT '',
     capacidad_maxima INT DEFAULT 0,
     observaciones TEXT DEFAULT '',
+	fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	activo int default 1,
 	CONSTRAINT fk_predios_potreros FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_potreros UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_potreros UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS sectores (
@@ -31,7 +37,7 @@ CREATE TABLE IF NOT EXISTS sectores (
     nombre VARCHAR(100) DEFAULT '',
 	activo int default 1,
 	CONSTRAINT fk_predios_sectores FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_sectores UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_sectores UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS lotes (
@@ -41,7 +47,7 @@ CREATE TABLE IF NOT EXISTS lotes (
     nombre VARCHAR(100) DEFAULT '',
 	activo int default 1,
 	CONSTRAINT fk_predios_lotes FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_lotes UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_lotes UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS grupos (
@@ -51,7 +57,7 @@ CREATE TABLE IF NOT EXISTS grupos (
     nombre VARCHAR(100) DEFAULT '',
 	activo int default 1,
 	CONSTRAINT fk_predios_grupos FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_grupos UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_grupos UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS diagnosticos_veterinarios (
@@ -63,7 +69,7 @@ CREATE TABLE IF NOT EXISTS diagnosticos_veterinarios (
 	comentarios text default '',
 	activo int default 1,
 	CONSTRAINT fk_predios_diagnosticos_veterinarios FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_diagnosticos_veterinarios UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_diagnosticos_veterinarios UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS motivos_ventas (
@@ -74,7 +80,7 @@ CREATE TABLE IF NOT EXISTS motivos_ventas (
 	comentarios text default '',
 	activo int default 1,
 	CONSTRAINT fk_predios_motivos_ventas FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_motivos_ventas UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_motivos_ventas UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS causas_muerte (
@@ -85,7 +91,7 @@ CREATE TABLE IF NOT EXISTS causas_muerte (
 	comentarios text default '',
 	activo int default 1,
 	CONSTRAINT fk_predios_causas_muerte FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_causas_muerte UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_causas_muerte UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS lugares_compras (
@@ -96,7 +102,7 @@ CREATE TABLE IF NOT EXISTS lugares_compras (
 	comentarios text default '',
 	activo int default 1,
 	CONSTRAINT fk_predios_lugares_compras FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_lugares_compras UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_lugares_compras UNIQUE(id_predio,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS lugares_ventas (
@@ -107,7 +113,51 @@ CREATE TABLE IF NOT EXISTS lugares_ventas (
 	comentarios text default '',
 	activo int default 1,
 	CONSTRAINT fk_predios_lugares_ventas FOREIGN KEY (id_predio) REFERENCES predios(id),
-	CONSTRAINT unique_predios_lugares_ventas UNIQUE(id_predio,codigo)
+	CONSTRAINT unique_lugares_ventas UNIQUE(id_predio,codigo)
+);
+
+CREATE TABLE IF NOT EXISTS imagenes (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+	nombre_archivo varchar(100) not null,
+	ruta_almacenamiento text not null,
+	fecha_subida,
+	comentarios text default '',
+	CONSTRAINT unique_productos_imagenes UNIQUE(id_producto,id_imagen)
+);
+
+CREATE TABLE imagenes (
+    id SERIAL PRIMARY KEY, 
+	id_predio int,
+    nombre_archivo VARCHAR(255) NOT NULL,
+    ruta_archivo TEXT NOT NULL, 
+    tipo_mime VARCHAR(50) NOT NULL,
+    tamano BIGINT NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    descripcion TEXT,
+	CONSTRAINT fk_predios_imagenes FOREIGN KEY (id_predio) REFERENCES predios(id),
+	CONSTRAINT unique_imagenes UNIQUE(id_predio,nombre_archivo)
+);
+
+CREATE TABLE IF NOT EXISTS productos (
+    id SERIAL PRIMARY KEY,
+	id_predio int,
+	codigo VARCHAR(20) NOT NULL,
+	nombre varchar(50) NOT NULL default '',
+	tipo_producto int default 0,
+	comentarios text default '',
+	activo int default 1,
+	CONSTRAINT fk_predios_productos FOREIGN KEY (id_predio) REFERENCES predios(id),
+	CONSTRAINT unique_productos UNIQUE(id_predio,codigo)
+);
+
+CREATE TABLE IF NOT EXISTS productos_imagenes (
+    id SERIAL PRIMARY KEY,
+	id_producto int not null,
+	id_imagen int not null,
+	CONSTRAINT fk_productos_imagenes1 FOREIGN KEY (id_producto) REFERENCES productos(id),
+	CONSTRAINT fk_productos_imagenes2 FOREIGN KEY (id_imagen) REFERENCES imagenes(id),
+	CONSTRAINT unique_productos_imagenes UNIQUE(id_producto,id_imagen)
 );
 
 CREATE TABLE IF NOT EXISTS veterinarios (
@@ -209,4 +259,7 @@ DELETE FROM config_key_values;
 INSERT INTO config_key_values (opcion,key,value,activo) VALUES
 ('sexo','Masculino','0',1),
 ('sexo','Femenino','1',1)
+('tipo_producto','Reproduccion','0',1)
+('tipo_producto','Antibiotico','1',1)
+('tipo_producto','Vitaminas','2',1)
 
