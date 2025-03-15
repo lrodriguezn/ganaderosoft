@@ -315,6 +315,7 @@ CREATE TABLE IF NOT EXISTS animales (
     padre_id int REFERENCES animales(id) ON DELETE CASCADE,
     codigo_padre varchar(100) default '', --se utiliza cuando es compra y el padre no esta registrado. se usa en el arbol genealogico
     codigo_pajuela varchar(100) default '', -- se utiliza cuando es por inseminacion
+    raza_id int  REFERENCES config_razas(id) ON DELETE CASCADE,
     
     capacidad_maxima INT DEFAULT 0,
     observaciones TEXT DEFAULT '',
