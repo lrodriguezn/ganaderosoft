@@ -298,6 +298,32 @@ CREATE TABLE IF NOT EXISTS config_color_animal (
 	activo int default 1
 );
 
+CREATE TABLE IF NOT EXISTS animales (
+    id SERIAL PRIMARY KEY,
+    predio_id int,
+    codigo VARCHAR(20) NOT NULL,
+    nombre VARCHAR(100) DEFAULT '',
+    fecha_nacimiento TIMESTAMP ,
+    fecha_compra TIMESTAMP ,
+    sexo_id smallint default 0, --macho, hembra
+    tipo_ingreso_id smallint default 0, --nacimiento, compra
+    madre_id int REFERENCES animales(id) ON DELETE CASCADE, 
+    codigo_madre varchar(100) default '', --se utiliza cuando el animal es compra
+    ind_transferencia_embriones smallint default 0,
+    codigo_donadora varchar(100) default '', --se utiliza cuando se marca que es transferencia de embriones para asignar el codigo de la madre gnetica y usarla en el arbol genealogico 
+    tipo_padre_id smallint default 0, --Monta, Inseminacion
+    padre_id int REFERENCES animales(id) ON DELETE CASCADE,
+    codigo_padre varchar(100) default '', --se utiliza cuando es compra y el padre no esta registrado. se usa en el arbol genealogico
+    codigo_pajuela varchar(100) default '', -- se utiliza cuando es por inseminacion
+    
+    capacidad_maxima INT DEFAULT 0,
+    observaciones TEXT DEFAULT '',
+	fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	activo int default 1,
+	CONSTRAINT fk_predios_potreros FOREIGN KEY (predio_id) REFERENCES predios(id),
+	CONSTRAINT unique_potreros UNIQUE(predio_id,codigo)
+);
+
 ---insertar los registros config_rangos_edades-----
 DELETE FROM config_rangos_edades;
 INSERT INTO config_rangos_edades (id, rango1, rango2, nombre, sexo, activo) VALUES
