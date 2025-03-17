@@ -72,6 +72,76 @@ CREATE TABLE IF NOT EXISTS Usuarios_Autenticacion_Dos_Factores (
     activo int default 1
 );
 
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS config_parametros (
+    id SERIAL PRIMARY KEY,
+	predio_id int,
+	codigo VARCHAR(20) NOT NULL,
+	nombre varchar(50) NOT NULL default '',
+	descripcion TEXT NOT NULL default '',
+	value_int int default 0,
+	value_float float default 0,
+	value_date TIMESTAMP,
+	activo int default 1,
+	CONSTRAINT fk_predios_parametros FOREIGN KEY (predio_id) REFERENCES predios(id),
+	CONSTRAINT unique_predios_parametros UNIQUE(predio_id,codigo)
+);
+
+CREATE TABLE IF NOT EXISTS config_rangos_edades (
+    id int PRIMARY KEY,
+    rango1 int default 0,
+    rango2 int default 0,
+	nombre varchar(50) NOT NULL default '',
+	sexo int NOT NULL default 0,
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_key_values (
+	opcion varchar(30) NOT NULL default '',
+	key varchar(50) NOT NULL default '',
+	value varchar(50) NOT NULL default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_razas (
+    id SERIAL PRIMARY KEY,
+	nombre varchar(50) NOT NULL default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_condiciones_corporales (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_tipos_explotacion (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_calidad_animal (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	comentarios text default '',
+	activo int default 1
+);
+
+CREATE TABLE IF NOT EXISTS config_color_animal (
+    id SERIAL PRIMARY KEY,
+	codigo VARCHAR(20) NOT NULL UNIQUE,
+	nombre varchar(50) NOT NULL default '',
+	activo int default 1
+);
+
 CREATE TABLE IF NOT EXISTS predios (
     id SERIAL PRIMARY KEY,
     codigo VARCHAR(20) NOT NULL UNIQUE,
@@ -231,76 +301,29 @@ CREATE TABLE IF NOT EXISTS veterinarios (
 	CONSTRAINT unique_predios_veterinarios UNIQUE(predio_id,codigo)
 );
 
-CREATE TABLE IF NOT EXISTS config_parametros (
+CREATE TABLE IF NOT EXISTS propietarios (
     id SERIAL PRIMARY KEY,
-	predio_id int,
+	predio_id int REFERENCES predios(id) ON DELETE CASCADE,
 	codigo VARCHAR(20) NOT NULL,
 	nombre varchar(50) NOT NULL default '',
-	descripcion TEXT NOT NULL default '',
-	value_int int default 0,
-	value_float float default 0,
-	value_date TIMESTAMP,
+	comentarios text default '',
 	activo int default 1,
-	CONSTRAINT fk_predios_parametros FOREIGN KEY (predio_id) REFERENCES predios(id),
-	CONSTRAINT unique_predios_parametros UNIQUE(predio_id,codigo)
+	CONSTRAINT unique_predios_propietarios UNIQUE(predio_id,codigo)
 );
 
-CREATE TABLE IF NOT EXISTS config_rangos_edades (
-    id int PRIMARY KEY,
-    rango1 int default 0,
-    rango2 int default 0,
-	nombre varchar(50) NOT NULL default '',
-	sexo int NOT NULL default 0,
-	activo int default 1
-);
-
-CREATE TABLE IF NOT EXISTS config_key_values (
-	opcion varchar(30) NOT NULL default '',
-	key varchar(50) NOT NULL default '',
-	value varchar(50) NOT NULL default '',
-	activo int default 1
-);
-
-CREATE TABLE IF NOT EXISTS config_razas (
+CREATE TABLE IF NOT EXISTS hierros (
     id SERIAL PRIMARY KEY,
+	predio_id int REFERENCES predios(id) ON DELETE CASCADE,
+	codigo VARCHAR(20) NOT NULL,
 	nombre varchar(50) NOT NULL default '',
-	activo int default 1
-);
-
-CREATE TABLE IF NOT EXISTS config_condiciones_corporales (
-    id SERIAL PRIMARY KEY,
-	codigo VARCHAR(20) NOT NULL UNIQUE,
-	nombre varchar(50) NOT NULL default '',
-	comentarios text default '',
-	activo int default 1
-);
-
-CREATE TABLE IF NOT EXISTS config_tipos_explotacion (
-    id SERIAL PRIMARY KEY,
-	codigo VARCHAR(20) NOT NULL UNIQUE,
-	nombre varchar(50) NOT NULL default '',
-	comentarios text default '',
-	activo int default 1
-);
-
-CREATE TABLE IF NOT EXISTS config_calidad_animal (
-    id SERIAL PRIMARY KEY,
-	codigo VARCHAR(20) NOT NULL UNIQUE,
-	nombre varchar(50) NOT NULL default '',
-	comentarios text default '',
-	activo int default 1
-);
-
-CREATE TABLE IF NOT EXISTS config_color_animal (
-    id SERIAL PRIMARY KEY,
-	codigo VARCHAR(20) NOT NULL UNIQUE,
-	nombre varchar(50) NOT NULL default '',
-	activo int default 1
+	imagen_id int int REFERENCES imagenes(id) ON DELETE CASCADE,
+	activo int default 1,
+	CONSTRAINT unique_predios_propietarios UNIQUE(predio_id,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS animales (
     id SERIAL PRIMARY KEY,
-    predio_id int,
+    predio_id int REFERENCES predios(id) ON DELETE CASCADE,
     codigo VARCHAR(20) NOT NULL,
     nombre VARCHAR(100) DEFAULT '',
     fecha_nacimiento TIMESTAMP ,
@@ -322,11 +345,25 @@ CREATE TABLE IF NOT EXISTS animales (
 	grupo_id int  REFERENCES grupo(id) ON DELETE CASCADE, 
 	lugares_compras int  REFERENCES lugares_compras(id) ON DELETE CASCADE, 
 	lugares_ventas int  REFERENCES lugares_ventas(id) ON DELETE CASCADE,
-	fecha_proximo_Parto TIMESTAMP,
-	fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	propietarios_id int  REFERENCES propietarios(id) ON DELETE CASCADE,
+	hierros_id int  REFERENCES hierros(id) ON DELETE CASCADE,
+	Codigo_RFID varchar(100) default '',
+	Codigo_Arete varchar(100) default '',
+	Codigo_QR varchar(100) default '',
 	activo int default 1,
-	CONSTRAINT fk_predios_potreros FOREIGN KEY (predio_id) REFERENCES predios(id),
-	CONSTRAINT unique_potreros UNIQUE(predio_id,codigo)
+	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT unique_animales UNIQUE(predio_id,codigo)
+);
+
+CREATE TABLE IF NOT EXISTS servicios_palpaciones (
+    id SERIAL PRIMARY KEY,
+	predio_id int REFERENCES predios(id) ON DELETE CASCADE,
+	fecha TIMESTAMP not null,
+	veterinarios_id int not null REFERENCES veterinarios(id) ON DELETE CASCADE,
+	
+	activo int default 1,
+	CONSTRAINT unique_predios_propietarios UNIQUE(predio_id,codigo)
 );
 
 ---insertar los registros config_rangos_edades-----
