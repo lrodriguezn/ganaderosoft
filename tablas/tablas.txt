@@ -316,9 +316,13 @@ CREATE TABLE IF NOT EXISTS animales (
     codigo_padre varchar(100) default '', --se utiliza cuando es compra y el padre no esta registrado. se usa en el arbol genealogico
     codigo_pajuela varchar(100) default '', -- se utiliza cuando es por inseminacion
     raza_id int  REFERENCES config_razas(id) ON DELETE CASCADE,
-    
-    capacidad_maxima INT DEFAULT 0,
-    observaciones TEXT DEFAULT '',
+    potrero_id int  REFERENCES potreros(id) ON DELETE CASCADE, 
+	sector_id int  REFERENCES sector(id) ON DELETE CASCADE, 
+	lote_id int  REFERENCES lote(id) ON DELETE CASCADE, 
+	grupo_id int  REFERENCES grupo(id) ON DELETE CASCADE, 
+	lugares_compras int  REFERENCES lugares_compras(id) ON DELETE CASCADE, 
+	lugares_ventas int  REFERENCES lugares_ventas(id) ON DELETE CASCADE,
+	fecha_proximo_Parto TIMESTAMP,
 	fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	activo int default 1,
 	CONSTRAINT fk_predios_potreros FOREIGN KEY (predio_id) REFERENCES predios(id),
