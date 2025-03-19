@@ -342,11 +342,11 @@ CREATE TABLE IF NOT EXISTS hierros (
 	predio_id int REFERENCES predios(id) ON DELETE CASCADE,
 	codigo VARCHAR(20) NOT NULL,
 	nombre varchar(50) NOT NULL default '',
-	imagen_id int int REFERENCES imagenes(id) ON DELETE CASCADE,
+	imagen_id int REFERENCES imagenes(id) ON DELETE CASCADE,
 	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	activo int default 1,
-	CONSTRAINT unique_predios_propietarios UNIQUE(predio_id,codigo)
+	CONSTRAINT unique_predios_hierros UNIQUE(predio_id,codigo)
 );
 
 CREATE TABLE IF NOT EXISTS animales (
@@ -372,9 +372,9 @@ CREATE TABLE IF NOT EXISTS animales (
 	config_calidad_animal_id int  REFERENCES config_calidad_animal(id) ON DELETE CASCADE,
 	config_color_animal_id int  REFERENCES config_color_animal(id) ON DELETE CASCADE,
     potrero_id int  REFERENCES potreros(id) ON DELETE CASCADE, 
-	sector_id int  REFERENCES sector(id) ON DELETE CASCADE, 
-	lote_id int  REFERENCES lote(id) ON DELETE CASCADE, 
-	grupo_id int  REFERENCES grupo(id) ON DELETE CASCADE, 
+	sector_id int  REFERENCES sectores(id) ON DELETE CASCADE, 
+	lote_id int  REFERENCES lotes(id) ON DELETE CASCADE, 
+	grupo_id int  REFERENCES grupos(id) ON DELETE CASCADE, 
 	lugares_compras int  REFERENCES lugares_compras(id) ON DELETE CASCADE, 
 	lugares_ventas int  REFERENCES lugares_ventas(id) ON DELETE CASCADE,
 	precio_compra float default 0,
@@ -418,7 +418,7 @@ CREATE TABLE IF NOT EXISTS servicios_palpaciones (
 	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	activo int default 1,
-	CONSTRAINT unique_predios_propietarios UNIQUE(predio_id,codigo)
+	CONSTRAINT unique_predios_servicios_palpaciones UNIQUE(predio_id,fecha)
 );
 
 ---insertar los registros config_rangos_edades-----
@@ -452,7 +452,3 @@ INSERT INTO config_key_values (opcion,key,value,activo) VALUES
 ('tipo_padre','Inseminacion','2',1),
 ('tipo_diagnostico','Reproductivo','0',1),
 ('tipo_diagnostico','Vitaminas','1',1);
-
-
-
-
