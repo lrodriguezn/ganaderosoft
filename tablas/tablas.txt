@@ -470,6 +470,54 @@ CREATE TABLE IF NOT EXISTS servicios_inseminacion_animales (
 	CONSTRAINT unique_predios_servicios_inseminacion_animales UNIQUE(predio_id,animales_id,fecha,servicios_inseminacion_grupal_id)
 );
 
+CREATE TABLE IF NOT EXISTS servicios_partos_animales (
+    id SERIAL PRIMARY KEY,
+	predio_id int NOT NULL REFERENCES predios(id) ON DELETE CASCADE,
+	animales_id int NOT NULL REFERENCES animales(id) ON DELETE CASCADE,
+	diagnosticos_veterinarios_id int NOT NULL REFERENCES diagnosticos_veterinarios(id) ON DELETE CASCADE,
+	config_condiciones_corporales_id int NOT NULL REFERENCES config_condiciones_corporales(id) ON DELETE CASCADE,
+	fecha TIMESTAMP NOT NULL,
+	machos smallint NOT NULL default 0,
+	hembras smallint NOT NULL default 0,
+	muertos smallint NOT NULL default 0,
+	tipo_parto_key  smallint NOT NULL default 0,
+	comentarios text NOT NULL default '',
+	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	activo int default 1,
+	CONSTRAINT unique_predios_servicios_partos_animales UNIQUE(predio_id,animales_id,fecha)
+);
+
+CREATE TABLE IF NOT EXISTS servicios_veterinarios_grupal (
+    id SERIAL PRIMARY KEY,
+	predio_id int NOT NULL REFERENCES predios(id) ON DELETE CASCADE,
+	codigo varchar(50) NOT NULL default '',
+	fecha TIMESTAMP NOT NULL,
+	veterinarios_id int NOT NULL REFERENCES veterinarios(id) ON DELETE CASCADE,
+	comentarios text default '',
+	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	activo int default 1,
+	CONSTRAINT unique_predios_servicios_inseminacion_grupal UNIQUE(predio_id,codigo)
+);
+
+CREATE TABLE IF NOT EXISTS servicios_veterinarios_animales (
+    id SERIAL PRIMARY KEY,
+	predio_id int NOT NULL REFERENCES predios(id) ON DELETE CASCADE,
+	animales_id int NOT NULL REFERENCES animales(id) ON DELETE CASCADE,
+	servicios_veterinarios_grupal_id int REFERENCES servicios_veterinarios_grupal(id) ON DELETE CASCADE,
+	veterinarios_id int NOT NULL REFERENCES veterinarios(id) ON DELETE CASCADE,
+	diagnosticos_veterinarios_id int NOT NULL REFERENCES diagnosticos_veterinarios(id) ON DELETE CASCADE,
+	config_condiciones_corporales_id int NOT NULL REFERENCES config_condiciones_corporales(id) ON DELETE CASCADE,
+	fecha TIMESTAMP NOT NULL,
+	comentarios text NOT NULL default '',
+	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	activo int default 1,
+	CONSTRAINT unique_predios_servicios_inseminacion_animales UNIQUE(predio_id,animales_id,fecha,servicios_inseminacion_grupal_id)
+);
+
+
 ---insertar los registros config_rangos_edades-----
 DELETE FROM config_rangos_edades;
 INSERT INTO config_rangos_edades (id, rango1, rango2, nombre, sexo, activo) VALUES
@@ -500,4 +548,10 @@ INSERT INTO config_key_values (opcion,key,value,activo) VALUES
 ('tipo_padre','Monta','1',1),
 ('tipo_padre','Inseminacion','2',1),
 ('tipo_diagnostico','Reproductivo','0',1),
-('tipo_diagnostico','Vitaminas','1',1);
+('tipo_diagnostico','Vitaminas','1',1),
+('tipo_parto_key','Normal','0',1),
+('tipo_parto_key','Con Ayuda','1',1),
+('tipo_parto_key','Distopico','2',1),
+('tipo_parto_key','Mortinato','3',1),
+('tipo_parto_key','Otros','4',1);
+
